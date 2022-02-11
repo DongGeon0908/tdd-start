@@ -1,9 +1,10 @@
 package chap2;
 
-import java.util.Locale;
-
 public class PasswordStrengthMeter {
     public PasswordStrength meter(String s) {
+        if (s == null || s.isEmpty()) {
+            return PasswordStrength.INVALID;
+        }
         if (s.length() < 8) {
             return PasswordStrength.NORMAL;
         }
@@ -13,17 +14,32 @@ public class PasswordStrengthMeter {
         if (!containsNum) {
             return PasswordStrength.NORMAL;
         }
+
+        boolean containsUpp = meetsContaingUppercaseCriteria(s);
+
+        if (!containsUpp) {
+            return PasswordStrength.NORMAL;
+        }
+
         return PasswordStrength.STRONG;
     }
 
-    private boolean meetsContainingNumberCriteria(String s) {
-        boolean containsNum = false;
+    private boolean meetsContaingUppercaseCriteria(String s) {
+        boolean containsUpp = false;
         for (char ch : s.toCharArray()) {
-            if (ch >= '0' && ch <= '9') {
-                containsNum = true;
-                break;
+            if (Character.isUpperCase(ch)) {
+                return true;
             }
         }
-        return containsNum;
+        return false;
+    }
+
+    private boolean meetsContainingNumberCriteria(String s) {
+        for (char ch : s.toCharArray()) {
+            if (ch >= '0' && ch <= '9') {
+                return true;
+            }
+        }
+        return false;
     }
 }
