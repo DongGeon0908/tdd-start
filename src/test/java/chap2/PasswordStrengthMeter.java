@@ -5,32 +5,26 @@ public class PasswordStrengthMeter {
         if (s == null || s.isEmpty()) {
             return PasswordStrength.INVALID;
         }
+        int metCounts = 0;
 
-        boolean lengthEnough = s.length() >= 8;
-        boolean containsNum = meetsContainingNumberCriteria(s);
-        boolean containsUpp = meetsContaingUppercaseCriteria(s);
+        if (s.length() >= 8) {
+            metCounts++;
+        }
 
-        if (lengthEnough && !containsNum && !containsUpp) {
+        if (meetsContainingNumberCriteria(s)) {
+            metCounts++;
+        }
+
+
+        if (meetsContaingUppercaseCriteria(s)) {
+            metCounts++;
+        }
+
+        if (metCounts <= 1) {
             return PasswordStrength.WEAK;
         }
 
-        if (!lengthEnough && containsNum && !containsUpp) {
-            return PasswordStrength.WEAK;
-        }
-
-        if (!lengthEnough && !containsNum && containsUpp) {
-            return PasswordStrength.WEAK;
-        }
-
-        if (!lengthEnough) {
-            return PasswordStrength.NORMAL;
-        }
-
-        if (!containsNum) {
-            return PasswordStrength.NORMAL;
-        }
-
-        if (!containsUpp) {
+        if (metCounts == 2) {
             return PasswordStrength.NORMAL;
         }
 
@@ -38,7 +32,6 @@ public class PasswordStrengthMeter {
     }
 
     private boolean meetsContaingUppercaseCriteria(String s) {
-        boolean containsUpp = false;
         for (char ch : s.toCharArray()) {
             if (Character.isUpperCase(ch)) {
                 return true;
