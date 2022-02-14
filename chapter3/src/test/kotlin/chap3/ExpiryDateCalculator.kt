@@ -1,20 +1,41 @@
 package chap3
 
 import java.time.LocalDate
+import java.time.YearMonth
 
 class ExpiryDateCalculator {
-    fun calculateExpiryDate(payData: PayData): LocalDate {
+
+
+    fun calculateExpiryDate(payData: PayData): LocalDate? {
         val addedMonths = payData.payAmount / 10000L
 
         if (payData.firstBillingDate != null) {
-            val candidateExp = payData.billingDate.plusMonths(addedMonths)
-            if (payData.firstBillingDate.dayOfMonth != candidateExp.dayOfMonth) {
-                return candidateExp.withDayOfMonth(
-                    payData.firstBillingDate.dayOfMonth
-                )
-            }
+            return expiryDateUsingFirstBillingDate(payData, addedMonths)
+        } else {
+            return payData.billingDate.plusMonths(addedMonths)
         }
-        return payData.billingDate.plusMonths(addedMonths)
     }
 
+    private fun expiryDateUsingFirstBillingDate(
+        payData: PayData,
+        addedMonths: Long
+    ): LocalDate? {
+        val candidateExp = payData.billingDate.plusMonths(addedMonths)
+        val dayOfFirstBilling = payData.firstBillingDate!!.dayOfMonth
+        if (isSameDayOfMonth(dayOfFirstBilling, candidateExp)) {
+            val dayLenOfCandiMon = lastDayOfMonth(candidateExp)
+
+            if (dayLenOfCandiMon < dayOfFirstBilling) {
+                return candidateExp.withDayOfMonth(dayLenOfCandiMon)
+            }
+            return candidateExp.withDayOfMonth(dayOfFirstBilling)
+        } else {
+            return candidateExp
+        }
+    }
+
+    private fun lastDayOfMonth(candidateExp: LocalDate?) = YearMonth.from(candidateExp).lengthOfMonth()
+
+    private fun isSameDayOfMonth(dayOfFirstBilling: Int, candidateExp: LocalDate) =
+        dayOfFirstBilling != candidateExp.dayOfMonth
 }

@@ -107,6 +107,26 @@ class ExpiryDateCalculatorTest {
         )
     }
 
+    @Test
+    fun 첫_납부일과_만료일_일자가_다를때_이만원_이상_납부() {
+        assertExpiryDate(
+            PayData(
+                LocalDate.of(2019, 1, 31),
+                LocalDate.of(2019, 2, 28),
+                20000
+            ),
+            LocalDate.of(2019, 4, 30)
+        )
+        assertExpiryDate(
+            PayData(
+                LocalDate.of(2019, 3, 31),
+                LocalDate.of(2019, 4, 30),
+                30000
+            ),
+            LocalDate.of(2019, 7, 31)
+        )
+    }
+
     fun assertExpiryDate(payData: PayData, expectedExpiryDate: LocalDate) {
         val cal = ExpiryDateCalculator()
         val realExpiryDate = cal.calculateExpiryDate(payData)
