@@ -127,6 +127,18 @@ class ExpiryDateCalculatorTest {
         )
     }
 
+    @Test
+    fun 십만원을_납부하면_1년_제공() {
+        assertExpiryDate(
+            PayData(
+                null,
+                LocalDate.of(2019, 1, 28),
+                100000
+            ),
+            LocalDate.of(2020, 1, 28)
+        )
+    }
+
     fun assertExpiryDate(payData: PayData, expectedExpiryDate: LocalDate) {
         val cal = ExpiryDateCalculator()
         val realExpiryDate = cal.calculateExpiryDate(payData)

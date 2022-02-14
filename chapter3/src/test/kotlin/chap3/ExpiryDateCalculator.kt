@@ -7,7 +7,11 @@ class ExpiryDateCalculator {
 
 
     fun calculateExpiryDate(payData: PayData): LocalDate? {
-        val addedMonths = payData.payAmount / 10000L
+        var addedMonths = payData.payAmount / 10000L
+
+        if (payData.payAmount == 100000) {
+            addedMonths = 12
+        }
 
         if (payData.firstBillingDate != null) {
             return expiryDateUsingFirstBillingDate(payData, addedMonths)
